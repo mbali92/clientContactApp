@@ -1,19 +1,32 @@
 <?php
   declare(strict_types=1);
   
-  namespace app\controllers;
+  
+  namespace App\Controllers;
+
+  use App\Models\ClientModel; 
 
   class ClientController{
 
     public function home_page():void{
-      header("Location: app/views/clientView.php");
+      header("Location:app/views/clientView.php");
     }
 
     public function save_client(array $client_data):void{
-      echo "(string)$client_data";
+       
+      $clientModel = new ClientModel();
+      
+      //call model if complete and throw error if not complete
+      if($client_data["user_name"]  !== ""  && $client_data["client_code"]  !== "" ){
+      $modelResponse = $clientModel->store_client_data($client_data);
+      echo "$modelResponse";
+      } else{echo "ERROR";} 
     }
-    
-  
+
+    public function fetch_clients():void{
+      $clientModel = new ClientModel();
+      $getResponse =  $clientModel->get_clients_data();
+    } 
   }
 
 ?>

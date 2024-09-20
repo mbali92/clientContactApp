@@ -1,14 +1,22 @@
 <?php
-    require_once 'app/controllers/ClientController.php';
 
-    use app\controllers\ClientController;
+    require __DIR__ . '/vendor/autoload.php';
     
-    
+
+    use App\Controllers\ClientController;
+    use Dotenv\Dotenv;
+
+    //Load .env file
+    $dotenv = Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
+     
     //instantiate controller classes 
     $clientController = new ClientController();
+  
     
     //access the requested url
     $requestUri = $_SERVER['REQUEST_URI'];
+    
 
     //remove project name from the path for better redirects
     $basePath = "/clientContactApp";
@@ -29,9 +37,18 @@
         }
     }
     if($_SERVER['REQUEST_METHOD'] == "GET"){
-        if($subPath == '/'){
-            $clientController->home_page();
+        switch ($subPath) {
+            case '/':
+                $clientController->home_page();
+                break;
+            case '/client/accessClients':
+                $clientController->fetch_clients();
+                break;
+            default:
+                # code...
+                break;
         }
+        
     }
     
     
