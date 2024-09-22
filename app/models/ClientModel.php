@@ -3,9 +3,9 @@
   
 
     namespace App\Models;
-    
     use App\Utils\DatabaseConn;
-    
+    use PDO;
+    use PDOException;
 
     class ClientModel{
         public function store_client_data(array $client_data){
@@ -64,5 +64,94 @@
             }else{echo "pdo  not found";}
 
         }
+
+        public function connect_contact(){
+            //access pdo static property connection from external class
+            $pdo_conn = new DatabaseConn(); 
+            $pdo_obg = $pdo_conn->pdo;
+
+            if($pdo_obg){
+                try{
+                    $sql = "INSERT INTO client_contact(client_id,contact_id) VALUES(:client_id, :contact_id)";
+                    $stmt = $pdo_obg->prepare($sql);
+                    
+                    // Bind parameters
+                        $stmt->bindParam(':client_id', $client_data['client_id']);
+                        $stmt->bindParam(':contact_id', $client_data['contact_id']);
+        
+                        $stmt->execute();
+                        echo"User inserted successfully";
+                    }catch (PDOException $e) {
+                        // Handle the exception and display the error message
+                        echo "Error inserting user: " . $e->getMessage();
+                    } catch (Exception $e) {
+                        // Handle any other exceptions
+                        echo "An unexpected error occurred: " . $e->getMessage();
+                    }
+            }else{echo "pdo  not found";}
+        }
+
+        public function sum_contacts() {
+            // Access PDO static property connection from external class
+            $pdo_conn = new DatabaseConn(); 
+            $pdo_obg = $pdo_conn->pdo;  // Assuming $pdo is the PDO object
+        
+            if ($pdo_obg) {
+                try {
+                    // Prepare SQL query
+                    $sql = "SELECT client_id, COUNT(contact_id) AS contact_count FROM client_contact GROUP BY client_id;";
+                    $stmt = $pdo_obg->prepare($sql);
+                    
+                    // Execute the query
+                    $stmt->execute();
+         
+                    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));  // Fetch results as associative array
+                } catch (PDOException $e) {
+                    // Handle the exception and display the error message
+                    echo "Error fetching contact counts: " . $e->getMessage();
+                } catch (Exception $e) {
+                    // Handle any other exceptions
+                    echo "An unexpected error occurred: " . $e->getMessage();
+                }
+            } else {
+                echo "PDO object not found";
+            }
+        }
+
+      
+        public function remove_contacts($clientId, $contactId) {
+            // Access PDO static property connection from external class
+            $pdo_conn = new DatabaseConn(); 
+            $pdo_obg = $pdo_conn->pdo;  // Assuming $pdo is the PDO object
+        
+            if ($pdo_obg) {
+                try {
+                    // Prepare SQL query using named placeholders to prevent SQL injection
+                    $sql = "DELETE FROM client_contact WHERE client_id = :client_id AND contact_id = :contact_id;";
+                    $stmt = $pdo_obg->prepare($sql);
+                    
+                    // Bind parameters to the named placeholders
+                    $stmt->bindParam(':client_id', $clientId, PDO::PARAM_INT);
+                    $stmt->bindParam(':contact_id', $contactId, PDO::PARAM_INT);
+        
+                    // Execute the query
+                    if ($stmt->execute()) {
+                        echo "Contact successfully removed.";
+                    } else {
+                        echo "Failed to remove contact.";
+                    }
+        
+                } catch (PDOException $e) {
+                    // Handle the exception and display the error message
+                    echo "Error removing contact: " . $e->getMessage();
+                } catch (Exception $e) {
+                    // Handle any other exceptions
+                    echo "An unexpected error occurred: " . $e->getMessage();
+                }
+            } else {
+                echo "PDO object not found";
+            }
+        }
+    
     }
 ?>
