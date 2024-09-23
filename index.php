@@ -38,7 +38,7 @@
                 $contactController->save_contacts($data);
                 break;
             case'/unlinkClientsContacts':
-                $clientController->unlink_contact_client($data);
+                // $clientController->unlink_contact_client($data);
                 break;
             case'/linkClientsContacts':
                 $clientController->link_contact_client($data);

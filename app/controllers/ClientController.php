@@ -27,19 +27,27 @@
       echo "$getResponse";
     } 
 
-    public function unlink_contact_client(){
+    public function unlink_contact_client($client_data){
       $clientModel = new ClientModel();
-      $clientModel->remove_contacts();
+      if($client_data["type"]  !== ""  && $client_data["id"]  !== "" ){
+        echo"$clientModel->remove_contacts()";
+      }else{
+        echo "one value short";
+      }
     }
 
     public function total_contacts(){
       $clientModel = new ClientModel();
-      $clientModel->sum_contacts();
+      $total = $clientModel->sum_contacts();
+      echo "$total";
     }
 
-    public function link_contact_client(){
+    public function link_contact_client($client_data){
       $clientModel = new ClientModel();
-      $clientModel->connect_contact();
+      if($client_data["contactId"]  !== ""  && $client_data["clientId"]  !== "" ){ 
+        $response = $clientModel->connect_contact($client_data);
+        echo $response;
+      }else{echo "error";}
     }
 
   }
