@@ -27,13 +27,13 @@
                     </div>
                 </div>
             </div>
-            <div class="error_message" id="error_message">
+            <div class="error_message" id="no_clients_error">
                 <p>No clients(s) found</p>
             </div>
         </div>
         <div class="client_form_box" id="client_form_box">
             <div class="page_rows">
-                <div class="col_tabs active" id="client_general-header" >
+                <div class="col_tabs" id="client_general-header" >
                     <h5>General</h5>
                 </div>
                 <div class="col_tabs" id="client_contact-header">
@@ -48,7 +48,7 @@
                     <select style="padding:10px;cursor: pointer;" name="" id="select_contact">
                       <option value="" disabled selected>Link multiple contacts to client</option>
                     </select>
-                    <p id=error_msg></p>
+                    <p id=client_form_error></p>
                     <form id="client_form">
                         <div>
                             <label for="">Name</label>
@@ -74,8 +74,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="error_message">
-                        <p>No clients(s) found</p>
+                    <div class="error_message" id="no_contacts_error">
+                        <p>No contact(s) found</p>
                     </div>
                 </div>
             </div>
