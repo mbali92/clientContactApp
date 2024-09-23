@@ -92,34 +92,50 @@
             }else{echo "pdo  not found";}
         }
 
-        public function sum_contacts() {
-            // Access PDO static property connection from external class
+        public function sum_contacts($colType) {
+            // Access PDO static property connection from the external class
             $pdo_conn = new DatabaseConn(); 
             $pdo_obg = $pdo_conn->pdo;  // Assuming $pdo is the PDO object
         
             if ($pdo_obg) {
                 try {
-                    // Prepare SQL query
-                    $sql = "SELECT client_id, COUNT(contact_id) AS contact_count FROM client_contact GROUP BY client_id;";
+                    // Prepare SQL query based on the column type
+                    if ($colType === "client") {
+                        $sql = "SELECT client_id, COUNT(contact_id) AS contact_count 
+                                FROM client_contact 
+                                GROUP BY client_id;";
+                    } else {
+                        $sql = "SELECT contact_id, COUNT(client_id) AS contact_count 
+                                FROM client_contact 
+                                GROUP BY contact_id;";
+                    }
+        
                     $stmt = $pdo_obg->prepare($sql);
                     
                     // Execute the query
                     $stmt->execute();
-         
-                    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));  // Fetch results as associative array
+                    
+                    // Fetch results as an associative array and encode to JSON
+                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    echo json_encode($results);
                 } catch (PDOException $e) {
-                    // Handle the exception and display the error message
-                    echo "Error fetching contact counts: " . $e->getMessage();
+                    // Handle PDO exceptions
+                    echo json_encode([
+                        'error' => 'Error fetching contact counts',
+                        'message' => $e->getMessage()
+                    ]);
                 } catch (Exception $e) {
                     // Handle any other exceptions
-                    echo "An unexpected error occurred: " . $e->getMessage();
+                    echo json_encode([
+                        'error' => 'An unexpected error occurred',
+                        'message' => $e->getMessage()
+                    ]);
                 }
             } else {
-                echo "PDO object not found";
+                echo json_encode(['error' => 'PDO object not found']);
             }
         }
-
-      
+        
         public function remove_contacts($removeDetails) {
             // Access PDO static property connection from external class
             $pdo_conn = new DatabaseConn(); 

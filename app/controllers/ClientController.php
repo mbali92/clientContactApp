@@ -37,9 +37,9 @@
       }
     }
 
-    public function total_contacts(){
+    public function total_contacts($colType){
       $clientModel = new ClientModel();
-      $total = $clientModel->sum_contacts();
+      $total = $clientModel->sum_contacts($colType);
       echo "$total";
     }
 

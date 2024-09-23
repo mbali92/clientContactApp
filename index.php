@@ -49,6 +49,7 @@
         }
     }
     if($_SERVER['REQUEST_METHOD'] == "GET"){
+    
         switch ($subPath) {
             case '/':
                 $clientController->home_page();
@@ -59,8 +60,11 @@
             case '/contact/accessContacts':
                 $contactController->fetch_contacts();
                 break;
-            case '/client/totalContacts':
-                $clientController->total_contacts();
+            case '/client/totalContacts?type=client':
+                $clientController->total_contacts($_GET['type']);
+                break;
+            case '/client/totalContacts?type=contact':
+                $clientController->total_contacts($_GET['type']);
                 break;
             default:
                 echo "url invalid";

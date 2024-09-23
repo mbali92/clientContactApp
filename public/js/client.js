@@ -64,7 +64,7 @@ function unlinkContact(event){
             id: event.target.getAttribute('id'),
             type:"contact"
         }
-        submitContentsToServer("GET","/clientContactApp/unlinkClientsContacts",removeData).then(response=>{
+        submitContentsToServer("POST","/clientContactApp/unlinkClientsContacts",removeData).then(response=>{
             console.log(response)
         }).catch(error =>
             console.error(error)
@@ -81,8 +81,7 @@ function getClients(){
         const clientInfo = elementsObject.clients_info_box;
         const clientSelectBox = elementsObject.select_client;
         
-        
-        submitContentsToServer("GET","/clientContactApp/client/totalContacts","").then(countResponse=>{
+        submitContentsToServer("GET","/clientContactApp/client/totalContacts?type=client","").then(countResponse=>{
             let contactNo = [];
             contactNo = JSON.parse(countResponse);
             
@@ -96,10 +95,7 @@ function getClients(){
                 </div>`;
                 clientSelectBox.innerHTML += `<option class="client_options" value=${item.id}>${item.user_name}</option>`;
             }) 
-
         }).catch(error =>{console.log(error);}) 
-
-       
     }).catch(error => 
         console.error(error)
     );   

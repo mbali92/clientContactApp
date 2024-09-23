@@ -1,7 +1,7 @@
 ﻿
 //access all the document objects
-const domButtons  = document.querySelectorAll("#create-contacts,#submit-form,#contacts_general-header, #contacts_contact-header");
-const domElements = document.querySelectorAll("#contacts_form_box,#general_tab,#contacts_tab,#contacts_info_box,#error_msg,#select_contacts,#error_msg,#contact_details")
+const domButtons  = document.querySelectorAll("#contact_client_info,#create-contacts,#submit-form,#contacts_general-header, #contacts_contact-header");
+const domElements = document.querySelectorAll("#select_clients,#contact_client_info,#contacts_form_box,#general_tab,#contacts_tab,#contacts_info_box,#error_msg,#select_contacts,#error_msg");
 const inputElements = document.querySelectorAll(".contact_input");
 
 
@@ -46,7 +46,6 @@ function createContact(event){
         surname:inputElements[1].value,
         email:inputElements[2].value
     } 
- 
     submitContentsToServer("POST","/clientContactApp/contact/saveContacts",data).then(response=>{
         if(response == "ERROR"){elementsObject.error_msg.innerHTML += "please complete all the fields";}else{
            location.reload();
@@ -57,26 +56,67 @@ function createContact(event){
 }
 //retrieve contacts list 
 function getContacts(){
-        const parentBox = elementsObject.contact_details;
+        const parentBox = elementsObject.contacts_info_box;
         submitContentsToServer("GET","/clientContactApp/contact/accessContacts","").then(response=>{
-       
-        showHideContent(elementsObject.error_msg,parentBox);
-    
-        JSON.parse(response).map((item)=>{
-            parentBox.innerHTML +=`<div class="page_rows" id=${item.id}>
-              <p class="contacts_details_cols">${item.user_name} ${item.surname}</p>
-              <p class="contacts_details_cols">${item.email}</p>
-              <p class="contacts_details_cols" id="unlink_clients">Unlink clients</p>
-            </div>`
-            elementsObject.select_contacts.innerHTML += `<option value=${item.id}>${item.surname}</option>`; 
-        }) 
-    }).catch(error=>{
-        showHideContent(parentBox,elementsObject.error_msg);
-        elementsObject.select_contacts.innerHTML += `<option disabled selected>no contacts </option>`;
-    })
+            showHideContent(elementsObject.error_msg,parentBox);
+        
+            submitContentsToServer("GET","/clientContactApp/client/totalContacts?type=contact","").then(countResponse=>{
+                let contactNo = [];
+                contactNo = JSON.parse(countResponse);
+                
+                JSON.parse(response).map((item,key)=>{
+                    const total = contactNo[key] == undefined ? 0 : contactNo[key].contact_count; 
+                    parentBox.innerHTML += `<div class="page_rows" id=${item.id}>
+                        <p class="contacts_details_cols">${item.user_name}</p>
+                        <p class="contacts_details_cols">${item.surname}</p>
+                        <p class="contacts_details_cols">${item.email}</p>
+                        <p class="contacts_details_cols">${total}</p>
+                    </div>`
+                    elementsObject.select_contacts.innerHTML += `<option value=${item.id}>${item.surname}</option>`; 
+                })
+            }).catch(error=>console.error(error))    
+            }).catch(error=>{
+                showHideContent(parentBox,elementsObject.error_msg);
+                elementsObject.select_contacts.innerHTML += `<option disabled selected>no contacts </option>`;
+            })
 }
 getContacts();
 
+
+function getClients(){
+    submitContentsToServer("GET","/clientContactApp/client/accessClients","").then(response=>{
+        //hide error massage show the clients list
+        const parentBox = elementsObject.contact_client_info;
+        const clientSelectBox = elementsObject.select_clients;
+        // showHideContent(elementsObject.error_message, parentBox)
+
+        JSON.parse(response).map((item,key)=>{
+            parentBox .innerHTML += 
+            `<div class="page_rows">
+                <div class="contacts_details_cols">${item.user_name}</div>
+                <div class="contacts_details_cols">${item.client_code}</div>
+                <div class="contacts_details_cols unlink" id=${item.id}>unlink client</div>
+            </div>`;
+            clientSelectBox.innerHTML += `<option class="client_options" value=${item.id}>${item.user_name}</option>`;
+        }) 
+    })
+}
+getClients();
+
+function unlinkContact(event){
+    if(event.target.classList.contains("unlink")){
+        console.log(event.target.getAttribute('id'));
+        const removeData ={
+            id: event.target.getAttribute('id'),
+            type:"client"
+        }
+        submitContentsToServer("POST","/clientContactApp/unlinkClientsContacts",removeData).then(response=>{
+            console.log(response)
+        }).catch(error =>
+            console.error(error)
+        )
+    }
+}
 
 //call functions on click events
 domButtons.forEach(element => {
@@ -94,6 +134,9 @@ domButtons.forEach(element => {
                     break;
                 case "submit-form":
                     createContact(event);
+                    break;
+                case "contact_client_info":
+                    unlinkContact(event);
                     break;
                 default:
                     break;
