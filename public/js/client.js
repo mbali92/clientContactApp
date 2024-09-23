@@ -86,7 +86,11 @@ function getClients(){
             contactNo = JSON.parse(countResponse);
             
             JSON.parse(response).map((item,key)=>{
-                const total = contactNo[key] == undefined ? 0 : contactNo[key].contact_count; 
+                let total = 0;
+               
+                if(contactNo.length !== 0){
+                    contactNo.forEach((element,no) => {element.client_id === item.id ? total = contactNo[no].contact_count : total = 0;});
+                }            
                 clientInfo.innerHTML += 
                 `<div class="page_rows">
                     <div class="client_details_cols">${item.user_name}</div>

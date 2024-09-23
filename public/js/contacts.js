@@ -63,9 +63,12 @@ function getContacts(){
             submitContentsToServer("GET","/clientContactApp/client/totalContacts?type=contact","").then(countResponse=>{
                 let contactNo = [];
                 contactNo = JSON.parse(countResponse);
-                
+            
                 JSON.parse(response).map((item,key)=>{
-                    const total = contactNo[key] == undefined ? 0 : contactNo[key].contact_count; 
+                    let total = 0;
+                    if(contactNo.length !== 0){
+                        contactNo.forEach((element,no) => {element.contact_id === item.id ? total = contactNo[no].contact_count : total = 0;});
+                    }        
                     parentBox.innerHTML += `<div class="page_rows" id=${item.id}>
                         <p class="contacts_details_cols">${item.user_name}</p>
                         <p class="contacts_details_cols">${item.surname}</p>
