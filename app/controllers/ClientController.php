@@ -30,7 +30,8 @@
     public function unlink_contact_client($client_data){
       $clientModel = new ClientModel();
       if($client_data["type"]  !== ""  && $client_data["id"]  !== "" ){
-        echo"$clientModel->remove_contacts()";
+        $response = $clientModel->remove_contacts($client_data);
+        echo"$response";
       }else{
         echo "one value short";
       }
