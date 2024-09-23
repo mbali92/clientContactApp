@@ -2,7 +2,7 @@
 
 //access all the document objects
 const domButtons  = document.querySelectorAll("#contact_details,#create-client,#submit-form,#client_general-header, #client_contact-header");
-const domElements = document.querySelectorAll("#client_form_box,#general_tab,#contacts_tab,#error_msg,#link_contact_options,#client_info,#clients_info_box,#error_message,#select_client,#select_contact,#contact_details,#no_contacts");
+const domElements = document.querySelectorAll("#client_form_box,#general_tab,#contacts_tab,#error_msg,#link_contact_options,#clients_info_box,#error_message,#select_client,#select_contact,#contact_details,#no_contacts");
 const inputElements = document.querySelectorAll("#name,#client_code");
 
 const elementsObject = {};
@@ -78,17 +78,22 @@ function getClients(){
         const parentBox = elementsObject.clients_info_box;
         showHideContent(elementsObject.error_message, parentBox)
     
-        const clientInfo = elementsObject.client_info;
+        const clientInfo = elementsObject.clients_info_box;
         const clientSelectBox = elementsObject.select_client;
         
-        let contactNo = [];
+        
         submitContentsToServer("GET","/clientContactApp/client/totalContacts","").then(countResponse=>{
+            let contactNo = [];
             contactNo = JSON.parse(countResponse);
             
             JSON.parse(response).map((item,key)=>{
-                clientInfo.innerHTML += `<div class="client_details_cols">${item.user_name}</div>
-                <div class="client_details_cols">${item.client_code}</div>
-                <div class="client_details_cols">${contactNo[key].contact_count}</div>`;
+                const total = contactNo[key] == undefined ? 0 : contactNo[key].contact_count; 
+                clientInfo.innerHTML += 
+                `<div class="page_rows">
+                    <div class="client_details_cols">${item.user_name}</div>
+                    <div class="client_details_cols">${item.client_code}</div>
+                    <div class="client_details_cols">${total}</div>
+                </div>`;
                 clientSelectBox.innerHTML += `<option class="client_options" value=${item.id}>${item.user_name}</option>`;
             }) 
 

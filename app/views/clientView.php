@@ -26,8 +26,6 @@
                         <h6>No. of linked contacts</h6>
                     </div>
                 </div>
-                <div class="page_rows" id="client_info">
-                </div>
             </div>
             <div class="error_message" id="error_message">
                 <p>No clients(s) found</p>
