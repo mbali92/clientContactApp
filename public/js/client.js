@@ -5,37 +5,13 @@ const domButtons  = document.querySelectorAll("#contact_details,#create-client,#
 const domElements = document.querySelectorAll("#client_form_box,#general_tab,#contacts_tab,#error_msg,#link_contact_options,#clients_info_box,#error_message,#select_client,#select_contact,#contact_details,#no_contacts");
 const inputElements = document.querySelectorAll("#name,#client_code");
 
+import {submitContentsToServer,showHideContent,linkContacts} from "./helpers.js";
+
 const elementsObject = {};
 domElements.forEach(element => {
     const key = element.id; // Use the ID as the key
     elementsObject[key] = element; // Assign the element to the object
 });
-
-function showHideContent (hideElement,showElement){
-    hideElement.style.display = "none";
-    showElement.style.display ="block";
-};
-
-//ajax post content submits  
-function submitContentsToServer(method, url, data) {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open(method, url, true);
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            console.log(xhr.responseText)
-          resolve(xhr.responseText);
-        } else {
-          reject(xhr.status);
-        }
-      };
-      xhr.onerror = function() {
-        reject('Request error.');
-      };
-      xhr.send(JSON.stringify(data));
-    });
-}
 
 //retrieve clients data through ajax
 function getContacts(){
@@ -50,7 +26,6 @@ function getContacts(){
             </div>`
             elementsObject.select_contact.innerHTML += `<option value=${item.id}>${item.email}</option>`; 
         }) 
-        
 }).catch(error=>{
      console.log(error);
     elementsObject.select_contact.innerHTML += `<option disabled selected>no contacts </option>`;
@@ -106,30 +81,21 @@ function getClients(){
 }     
 getClients()
 
-function linkContacts(linkData){
-    submitContentsToServer("POST","/clientContactApp/linkClientsContacts",linkData).then(response=>{
-        console.log(response)
-    }).catch(error => 
-        console.error(error)
-    );   
-}
 
 elementsObject.select_contact.addEventListener('change',(event)=>{
    const contactId = elementsObject.select_contact.options[elementsObject.select_contact.selectedIndex].value;
    const clientId = elementsObject.select_client.options[elementsObject.select_client.selectedIndex].value;
    if(clientId){
-    const linkData ={
+    const linkData = {
         clientId : clientId,
         contactId :contactId
     }
     linkContacts(linkData);
    }else{console.log("select client name")}
-   
 })
 
 
 function saveClients(event){
-    
     const clientData = {
         user_name: inputElements[0].value,
         client_code: inputElements[1].value  
@@ -142,7 +108,7 @@ function saveClients(event){
         console.error(error)
     )
 }
-saveClients()
+saveClients();
 
 //call functions on click events
 domButtons.forEach(element => {
