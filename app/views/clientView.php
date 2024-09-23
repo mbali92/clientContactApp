@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="client_form_box" id="client_form_box">
-            <div class="page_rows">
+            <div class="page_rows header_tabs">
                 <div class="col_tabs" id="client_general-header" >
                     <h5>General</h5>
                 </div>
@@ -52,11 +52,12 @@
                     <form id="client_form">
                         <div>
                             <label for="">Name</label>
-                            <input  id="name" type="text" required>
+                            <input  id="client_name" type="text" required>
                         </div>
                         <div>
                             <label for="">client code</label>
-                            <input id="client_code" type="text" required>
+                            <p id="code_text"></p>
+                            <button id="generate_button">Generate a code</button>
                         </div>
                         <button id='submit-form'>Submit</button>
                     </form>

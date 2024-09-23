@@ -1,22 +1,16 @@
 
 
 //access all the document objects
-const domButtons  = document.querySelectorAll("#contact_details,#create-client,#submit-form,#client_general-header, #client_contact-header");
-const domElements = document.querySelectorAll(".col_tabs,#active,#no_contacts_error,#no_clients_error,#client_form_box,#general_tab,#contacts_tab,#client_form_error,#link_contact_options,#clients_info_box,#error_message,#select_client,#select_contact,#contact_details,#no_contacts");
-const inputElements = document.querySelectorAll("#name,#client_code");
+const domButtons  = document.querySelectorAll("#contact_details,#generate_button,#create-client,#submit-form,#client_general-header, #client_contact-header");
+const domElements = document.querySelectorAll("#code_text,#client_name,#active,#no_contacts_error,#no_clients_error,#client_form_box,#general_tab,#contacts_tab,#client_form_error,#link_contact_options,#clients_info_box,#error_message,#select_client,#select_contact,#contact_details,#no_contacts");
 
 import {submitContentsToServer,showHideContent,addEventToLinkContacts,unlinkContact} from "./helpers.js";
-
 
 const elementsObject = {};
 domElements.forEach(element => {
     const key = element.id; // Use the ID as the key
     elementsObject[key] = element; 
 });
-
-console.log(elementsObject.col_tabs)
-
-
 
 function getClients(){
     submitContentsToServer("GET","/clientContactApp/client/accessClients","").then(response=>{
@@ -75,11 +69,27 @@ function getContacts(){
 getContacts();
 
 
+function generateClientCode(event){
+    event.preventDefault();
+    const letter = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","Y","Z"];
+    let client_code = "";  
+
+    for (let index = 0; index < 3; index++) {
+        const randomNumber = Math.floor(Math.random() *  letter.length);
+        client_code += letter[randomNumber];
+        client_code += randomNumber.toString();
+    }
+    if(client_code.length > 6){
+       client_code = client_code.slice(0,6)  
+    }
+    elementsObject.code_text.innerHTML = client_code;
+} 
+
 function saveClients(event){
     event.preventDefault();
     const clientData = {
-        user_name: inputElements[0].value,
-        client_code: inputElements[1].value  
+        user_name: elementsObject.client_name.value,
+        client_code: elementsObject.code_text.innerHTML  
     }
     submitContentsToServer("POST","/clientContactApp/client/saveClient",clientData).then(response=>{
         if(response == "ERROR"){elementsObject.client_form_error.innerHTML = "please complete all the fields";}else{
@@ -112,6 +122,9 @@ domButtons.forEach(element => {
                     break;
                 case "contact_details":
                     unlinkContact(event,"contact");
+                    break;
+                case "generate_button":
+                    generateClientCode(event);
                     break;
                 default:
                     console.log("id match not found");
