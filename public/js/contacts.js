@@ -103,6 +103,28 @@ function getClients(){
 }
 getClients();
 
+function linkContacts(linkData){
+    submitContentsToServer("POST","/clientContactApp/linkClientsContacts",linkData).then(response=>{
+        console.log(response)
+    }).catch(error => 
+        console.error(error)
+    );   
+}
+
+elementsObject.select_clients.addEventListener('change',(event)=>{
+   const contactId = elementsObject.select_contacts.options[elementsObject.select_contacts.selectedIndex].value;
+   const clientId = elementsObject.select_clients.options[elementsObject.select_clients.selectedIndex].value;
+   if(contactId){
+    const linkData ={
+        clientId : clientId,
+        contactId :contactId
+    }
+    console.log(linkData);
+    linkContacts(linkData);
+   }else{console.log("select contact option")}
+   
+})
+
 function unlinkContact(event){
     if(event.target.classList.contains("unlink")){
         console.log(event.target.getAttribute('id'));

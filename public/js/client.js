@@ -102,7 +102,6 @@ function getClients(){
 }     
 getClients()
 
-
 function linkContacts(linkData){
     submitContentsToServer("POST","/clientContactApp/linkClientsContacts",linkData).then(response=>{
         console.log(response)
