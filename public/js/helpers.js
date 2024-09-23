@@ -1,4 +1,5 @@
-﻿//ajax post content submits  
+﻿
+//ajax post content submits  
 export function submitContentsToServer(method, url,clientData) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -72,6 +73,7 @@ export function unlinkContact(event, type){
         )
     }
 }
-//change selected tab's color
-document.querySelectorAll('').forEach(tab=>tab.classList.add("active"));
+
+
+
 

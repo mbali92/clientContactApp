@@ -2,16 +2,21 @@
 
 //access all the document objects
 const domButtons  = document.querySelectorAll("#contact_details,#create-client,#submit-form,#client_general-header, #client_contact-header");
-const domElements = document.querySelectorAll("#no_contacts_error,#no_clients_error,#client_form_box,#general_tab,#contacts_tab,#client_form_error,#link_contact_options,#clients_info_box,#error_message,#select_client,#select_contact,#contact_details,#no_contacts");
+const domElements = document.querySelectorAll(".col_tabs,#active,#no_contacts_error,#no_clients_error,#client_form_box,#general_tab,#contacts_tab,#client_form_error,#link_contact_options,#clients_info_box,#error_message,#select_client,#select_contact,#contact_details,#no_contacts");
 const inputElements = document.querySelectorAll("#name,#client_code");
 
 import {submitContentsToServer,showHideContent,addEventToLinkContacts,unlinkContact} from "./helpers.js";
 
+
 const elementsObject = {};
 domElements.forEach(element => {
     const key = element.id; // Use the ID as the key
-    elementsObject[key] = element; // Assign the element to the object
+    elementsObject[key] = element; 
 });
+
+console.log(elementsObject.col_tabs)
+
+
 
 function getClients(){
     submitContentsToServer("GET","/clientContactApp/client/accessClients","").then(response=>{
